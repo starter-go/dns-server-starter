@@ -1,15 +1,58 @@
 package main4dnsss
 import (
+    p9fd301bff "github.com/starter-go/dns-server-starter/app/classes/cache"
     pc47b01c43 "github.com/starter-go/dns-server-starter/app/classes/dnsss"
+    p11d85ef56 "github.com/starter-go/dns-server-starter/app/classes/monitor"
+    p2eec8228d "github.com/starter-go/dns-server-starter/app/classes/responder"
+    peceb8058a "github.com/starter-go/dns-server-starter/app/classes/upstream"
     pd70af8b23 "github.com/starter-go/dns-server-starter/app/data/dao"
     p6365d7957 "github.com/starter-go/dns-server-starter/app/data/database"
     pc9a3f7a59 "github.com/starter-go/dns-server-starter/app/data/dxo"
     p7d9911eb4 "github.com/starter-go/dns-server-starter/app/implements/example"
     p421feda54 "github.com/starter-go/dns-server-starter/app/web/controllers/apiv1"
+    p9ee9f73b8 "github.com/starter-go/dns-server-starter/dnsss"
     pd1a916a20 "github.com/starter-go/libgin"
     p512a30914 "github.com/starter-go/libgorm"
      "github.com/starter-go/application"
 )
+
+// type p9fd301bff.Cache in package:github.com/starter-go/dns-server-starter/app/classes/cache
+//
+// id:com-9fd301bff6e7228e-cache-Cache
+// class:class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry
+// alias:
+// scope:singleton
+//
+type p9fd301bff6_cache_Cache struct {
+}
+
+func (inst* p9fd301bff6_cache_Cache) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-9fd301bff6e7228e-cache-Cache"
+	r.Classes = "class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p9fd301bff6_cache_Cache) new() any {
+    return &p9fd301bff.Cache{}
+}
+
+func (inst* p9fd301bff6_cache_Cache) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p9fd301bff.Cache)
+	nop(ie, com)
+
+	
+
+
+    return nil
+}
+
+
 
 // type pc47b01c43.ServerStarter in package:github.com/starter-go/dns-server-starter/app/classes/dnsss
 //
@@ -44,6 +87,7 @@ func (inst* pc47b01c433_dnsss_ServerStarter) inject(injext application.Injection
 	
     com.UDPPort = inst.getUDPPort(ie)
     com.UDPHost = inst.getUDPHost(ie)
+    com.Resolvers = inst.getResolvers(ie)
 
 
     return nil
@@ -57,6 +101,175 @@ func (inst*pc47b01c433_dnsss_ServerStarter) getUDPPort(ie application.InjectionE
 
 func (inst*pc47b01c433_dnsss_ServerStarter) getUDPHost(ie application.InjectionExt)string{
     return ie.GetString("${dns.udp.host}")
+}
+
+
+func (inst*pc47b01c433_dnsss_ServerStarter) getResolvers(ie application.InjectionExt)[]p9ee9f73b8.ResolverRegistry{
+    dst := make([]p9ee9f73b8.ResolverRegistry, 0)
+    src := ie.ListComponents(".class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry")
+    for _, item1 := range src {
+        item2 := item1.(p9ee9f73b8.ResolverRegistry)
+        dst = append(dst, item2)
+    }
+    return dst
+}
+
+
+
+// type p11d85ef56.ErrorFilter in package:github.com/starter-go/dns-server-starter/app/classes/monitor
+//
+// id:com-11d85ef56047f359-monitor-ErrorFilter
+// class:class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry
+// alias:
+// scope:singleton
+//
+type p11d85ef560_monitor_ErrorFilter struct {
+}
+
+func (inst* p11d85ef560_monitor_ErrorFilter) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-11d85ef56047f359-monitor-ErrorFilter"
+	r.Classes = "class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p11d85ef560_monitor_ErrorFilter) new() any {
+    return &p11d85ef56.ErrorFilter{}
+}
+
+func (inst* p11d85ef560_monitor_ErrorFilter) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p11d85ef56.ErrorFilter)
+	nop(ie, com)
+
+	
+
+
+    return nil
+}
+
+
+
+// type p11d85ef56.Monitor in package:github.com/starter-go/dns-server-starter/app/classes/monitor
+//
+// id:com-11d85ef56047f359-monitor-Monitor
+// class:class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry
+// alias:
+// scope:singleton
+//
+type p11d85ef560_monitor_Monitor struct {
+}
+
+func (inst* p11d85ef560_monitor_Monitor) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-11d85ef56047f359-monitor-Monitor"
+	r.Classes = "class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p11d85ef560_monitor_Monitor) new() any {
+    return &p11d85ef56.Monitor{}
+}
+
+func (inst* p11d85ef560_monitor_Monitor) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p11d85ef56.Monitor)
+	nop(ie, com)
+
+	
+
+
+    return nil
+}
+
+
+
+// type p2eec8228d.DnsssResponder in package:github.com/starter-go/dns-server-starter/app/classes/responder
+//
+// id:com-2eec8228d893edfe-responder-DnsssResponder
+// class:class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry
+// alias:
+// scope:singleton
+//
+type p2eec8228d8_responder_DnsssResponder struct {
+}
+
+func (inst* p2eec8228d8_responder_DnsssResponder) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-2eec8228d893edfe-responder-DnsssResponder"
+	r.Classes = "class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* p2eec8228d8_responder_DnsssResponder) new() any {
+    return &p2eec8228d.DnsssResponder{}
+}
+
+func (inst* p2eec8228d8_responder_DnsssResponder) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*p2eec8228d.DnsssResponder)
+	nop(ie, com)
+
+	
+
+
+    return nil
+}
+
+
+
+// type peceb8058a.ForwardResolver in package:github.com/starter-go/dns-server-starter/app/classes/upstream
+//
+// id:com-eceb8058adebfff3-upstream-ForwardResolver
+// class:class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry
+// alias:
+// scope:singleton
+//
+type peceb8058ad_upstream_ForwardResolver struct {
+}
+
+func (inst* peceb8058ad_upstream_ForwardResolver) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-eceb8058adebfff3-upstream-ForwardResolver"
+	r.Classes = "class-9ee9f73b8d049a5dcf2cc5fdc03de167-ResolverRegistry"
+	r.Aliases = ""
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* peceb8058ad_upstream_ForwardResolver) new() any {
+    return &peceb8058a.ForwardResolver{}
+}
+
+func (inst* peceb8058ad_upstream_ForwardResolver) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*peceb8058a.ForwardResolver)
+	nop(ie, com)
+
+	
+    com.DnsUpstreamServers = inst.getDnsUpstreamServers(ie)
+
+
+    return nil
+}
+
+
+func (inst*peceb8058ad_upstream_ForwardResolver) getDnsUpstreamServers(ie application.InjectionExt)string{
+    return ie.GetString("${dns.resolver.upstream.servers}")
 }
 
 

@@ -9,6 +9,7 @@ import (
 	"github.com/miekg/dns"
 	"github.com/starter-go/application"
 	"github.com/starter-go/dns-server-starter/app/utils"
+	"github.com/starter-go/dns-server-starter/dnsss"
 	"github.com/starter-go/vlog"
 )
 
@@ -21,6 +22,8 @@ type ServerStarter struct {
 
 	UDPPort int    //starter:inject("${dns.udp.port}")
 	UDPHost string //starter:inject("${dns.udp.host}")
+
+	Resolvers []dnsss.ResolverRegistry //starter:inject(".")
 
 	timeout        time.Duration
 	currentRuntime *innerDNSServerRuntime
@@ -51,14 +54,26 @@ func (inst *ServerStarter) create() error {
 
 func (inst *ServerStarter) start() error {
 	vlog.Info("dnsss.ServerStarter.start()")
+	chain := inst.loadResolverChain()
 	rt := &innerDNSServerRuntime{
 		starter: inst,
+		chain:   chain,
 	}
 	older := inst.currentRuntime
 	inst.currentRuntime = rt
 	inst.closeOlder(older)
 	rt.start()
 	return inst.waitForRuntimeStarted(rt, inst.timeout)
+}
+
+func (inst *ServerStarter) loadResolverChain() dnsss.ResolverChain {
+	builder := dnsss.ResolverChainBuilder{}
+	src := inst.Resolvers
+	for _, r1 := range src {
+		tmp := r1.ListResolverRegistrations()
+		builder.Add(tmp...)
+	}
+	return builder.Build()
 }
 
 func (inst *ServerStarter) closeOlder(older *innerDNSServerRuntime) error {
@@ -118,6 +133,8 @@ func (inst *ServerStarter) loop() error {
 
 type innerDNSServerRuntime struct {
 	starter *ServerStarter
+
+	chain dnsss.ResolverChain
 
 	starting bool
 	started  bool
@@ -193,6 +210,30 @@ func (inst *innerDNSServerRuntime) computeUDPAddr() string {
 }
 
 func (inst *innerDNSServerRuntime) handleDNSRequest(w dns.ResponseWriter, r *dns.Msg) {
+
+	m2 := new(dns.Msg)
+	m2.SetReply(r)
+
+	ctx := new(dnsss.Context)
+	ctx.Request = r
+	ctx.Writer = w
+	ctx.Response = m2
+
+	err := inst.chain.Resolve(ctx)
+	if err != nil {
+		vlog.Warn("%v", err.Error())
+	}
+}
+
+func (inst *innerDNSServerRuntime) deprecated_handleDNSRequest(w dns.ResponseWriter, r *dns.Msg) {
+
+	qlist := r.Question
+	// var question *dns.Question
+	for _, q := range qlist {
+		vlog.Info("dns.rr = %v", q.String())
+		// question = &q
+	}
+
 	m2 := new(dns.Msg)
 	m2.SetReply(r)
 
@@ -204,6 +245,11 @@ func (inst *innerDNSServerRuntime) handleDNSRequest(w dns.ResponseWriter, r *dns
 			// *Msg r has an TSIG records and it was not validated
 		}
 	}
+
+	// rr := inst.makeMockRR(question)
+	// if rr != nil {
+	// 	m2.Answer = []dns.RR{rr}
+	// }
 
 	w.WriteMsg(m2)
 }
