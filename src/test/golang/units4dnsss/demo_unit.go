@@ -1,4 +1,4 @@
-package unit
+package units4dnsss
 
 import "github.com/starter-go/units"
 
