@@ -1,13 +1,17 @@
 package orders
 
 const (
-	OrderMin = iota
+	OrderMin = 0
 
-	ErrorFilter
-	Monitor
-	Responder
-	Cache
-	Upstream
+	ErrorFilter = 100
+	Monitor     = 110
+	Responder   = 120
+	Cache       = 130
 
-	OrderMax
+	UserFilterMin = 200
+	UserFilterMax = 500
+
+	Upstream = 700
+
+	OrderMax = 999
 )

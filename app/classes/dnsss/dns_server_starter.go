@@ -73,6 +73,7 @@ func (inst *ServerStarter) loadResolverChain() dnsss.ResolverChain {
 		tmp := r1.ListResolverRegistrations()
 		builder.Add(tmp...)
 	}
+	builder.LogItems()
 	return builder.Build()
 }
 

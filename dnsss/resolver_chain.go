@@ -1,6 +1,12 @@
 package dnsss
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+	"strings"
+
+	"github.com/starter-go/vlog"
+)
 
 ////////////////////////////////////////////////////////////////////////////////
 // ResolverChain
@@ -41,8 +47,16 @@ func (inst *ResolverChainBuilder) isItemReady(item *ResolverRegistration) bool {
 	return true
 }
 
+func (inst *ResolverChainBuilder) doSort(reverse bool) {
+	var i sort.Interface = inst
+	if reverse {
+		i = sort.Reverse(i)
+	}
+	sort.Sort(i)
+}
+
 func (inst *ResolverChainBuilder) sort() {
-	sort.Sort(inst)
+	inst.doSort(false)
 }
 func (inst *ResolverChainBuilder) Len() int {
 	return len(inst.items)
@@ -73,6 +87,32 @@ func (inst *ResolverChainBuilder) Build() ResolverChain {
 	}
 
 	return chain
+}
+
+func (inst *ResolverChainBuilder) initWithItems(src []*ResolverRegistration) {
+	dst := make([]*ResolverRegistration, 0)
+	dst = append(dst, src...)
+	inst.items = dst
+}
+
+func (inst *ResolverChainBuilder) LogItems() {
+
+	sb := &strings.Builder{}
+
+	tmp := new(ResolverChainBuilder)
+	tmp.initWithItems(inst.items)
+	tmp.doSort(true)
+	list := tmp.items
+
+	sb.WriteString("dnsss.ResolverChain:\n\n")
+	for idx, it := range list {
+		if !it.Enabled {
+			continue
+		}
+		str := fmt.Sprintf("[Resolver index:%v order:%v name:'%v']\n", idx, it.Order, it.Name)
+		sb.WriteString(str)
+	}
+	vlog.Info("%v", sb.String())
 }
 
 ////////////////////////////////////////////////////////////////////////////////

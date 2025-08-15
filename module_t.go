@@ -8,8 +8,8 @@ import (
 
 const (
 	theModuleName     = "github.com/starter-go/dns-server-starter"
-	theModuleVersion  = "v0.0.1"
-	theModuleRevision = 1
+	theModuleVersion  = "v0.0.2-beta.1"
+	theModuleRevision = 2
 )
 
 ////////////////////////////////////////////////////////////////////////////////

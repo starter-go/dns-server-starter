@@ -13,6 +13,8 @@ type DnsssResponder struct {
 
 	_as func(dnsss.ResolverRegistry) //starter:as(".")
 
+	Enabled bool //starter:inject("${dnsss-resolver.responder.enabled}")
+
 }
 
 func (inst *DnsssResponder) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
@@ -22,10 +24,10 @@ func (inst *DnsssResponder) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
 func (inst *DnsssResponder) ListResolverRegistrations() []*dnsss.ResolverRegistration {
 
 	r1 := &dnsss.ResolverRegistration{
-		Name:     "DnsssResponder",
+		Name:     "dnsss.responder",
 		Resolver: inst,
 		Order:    orders.Responder,
-		Enabled:  true,
+		Enabled:  inst.Enabled,
 	}
 
 	return []*dnsss.ResolverRegistration{r1}

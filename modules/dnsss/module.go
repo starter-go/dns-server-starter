@@ -5,11 +5,8 @@ import (
 	dnsserverstarter "github.com/starter-go/dns-server-starter"
 	"github.com/starter-go/dns-server-starter/gen/main4dnsss"
 	"github.com/starter-go/dns-server-starter/gen/test4dnsss"
-	"github.com/starter-go/libgin/modules/libgin"
-	"github.com/starter-go/libgorm/modules/libgorm"
-	"github.com/starter-go/module-gorm-mysql/modules/mysql"
-	"github.com/starter-go/module-gorm-sqlserver/modules/sqlserver"
-	"github.com/starter-go/security/modules/security"
+	"github.com/starter-go/starter"
+	"github.com/starter-go/stopper/modules/stopper"
 )
 
 // Module  ...
@@ -17,12 +14,14 @@ func Module() application.Module {
 	mb := dnsserverstarter.NewMainModule()
 	mb.Components(main4dnsss.ExportComponents)
 
-	mb.Depend(libgin.Module())
-	mb.Depend(libgorm.Module())
-	mb.Depend(security.Module())
+	// mb.Depend(libgin.Module())
+	// mb.Depend(security.Module())
+	// mb.Depend(libgorm.Module())
+	// mb.Depend(mysql.Module())
+	// mb.Depend(sqlserver.Module())
 
-	mb.Depend(mysql.Module())
-	mb.Depend(sqlserver.Module())
+	mb.Depend(starter.Module())
+	mb.Depend(stopper.Module())
 
 	return mb.Create()
 }

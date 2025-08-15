@@ -11,7 +11,8 @@ type ErrorFilter struct {
 
 	_as func(dnsss.ResolverRegistry) //starter:as(".")
 
-	QuietMode bool
+	Enabled   bool //starter:inject("${dnsss-resolver.error-filter.enabled}")
+	QuietMode bool //starter:inject("${dnsss-resolver.error-filter.quiet-mode}")
 }
 
 func (inst *ErrorFilter) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
@@ -20,13 +21,13 @@ func (inst *ErrorFilter) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
 
 func (inst *ErrorFilter) ListResolverRegistrations() []*dnsss.ResolverRegistration {
 
-	inst.QuietMode = true
+	// inst.QuietMode = true
 
 	r1 := &dnsss.ResolverRegistration{
-		Name:     "monitor.ErrorFilter",
+		Name:     "dnsss.error-filter",
 		Resolver: inst,
 		Order:    orders.ErrorFilter,
-		Enabled:  true,
+		Enabled:  inst.Enabled,
 	}
 	return []*dnsss.ResolverRegistration{r1}
 }

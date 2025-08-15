@@ -18,7 +18,9 @@ type ForwardResolver struct {
 	_as func(dnsss.ResolverRegistry) //starter:as(".")
 
 	// 以逗号分隔的 DNS 服务器地址， like 'host:port', 其中的 port 是可选的， 默认值为 53
-	DnsUpstreamServers string //starter:inject("${dns.resolver.upstream.servers}")
+	DnsUpstreamServers string //starter:inject("${dnsss-resolver.upstream.servers}")
+
+	Enabled bool //starter:inject("${dnsss-resolver.upstream.enabled}")
 
 	frc      *myForwardResolverContext
 	frcMutex sync.Mutex
@@ -30,10 +32,10 @@ func (inst *ForwardResolver) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
 
 func (inst *ForwardResolver) ListResolverRegistrations() []*dnsss.ResolverRegistration {
 	r1 := &dnsss.ResolverRegistration{
-		Name:     "upstream.ForwardResolver",
+		Name:     "dnsss.upstream",
 		Resolver: inst,
 		Order:    orders.Upstream,
-		Enabled:  true,
+		Enabled:  inst.Enabled,
 	}
 	return []*dnsss.ResolverRegistration{r1}
 }

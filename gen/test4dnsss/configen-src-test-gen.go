@@ -1,22 +1,22 @@
 package test4dnsss
 import (
-    pd9888079a "github.com/starter-go/dns-server-starter/src/test/golang/unit"
+    p3403d6cb1 "github.com/starter-go/dns-server-starter/src/test/golang/units4dnsss"
      "github.com/starter-go/application"
 )
 
-// type pd9888079a.DemoUnit in package:github.com/starter-go/dns-server-starter/src/test/golang/unit
+// type p3403d6cb1.DemoUnit in package:github.com/starter-go/dns-server-starter/src/test/golang/units4dnsss
 //
-// id:com-d9888079a3ec2e2c-unit-DemoUnit
+// id:com-3403d6cb189096c1-units4dnsss-DemoUnit
 // class:class-0dc072ed44b3563882bff4e657a52e62-Units
 // alias:
 // scope:singleton
 //
-type pd9888079a3_unit_DemoUnit struct {
+type p3403d6cb18_units4dnsss_DemoUnit struct {
 }
 
-func (inst* pd9888079a3_unit_DemoUnit) register(cr application.ComponentRegistry) error {
+func (inst* p3403d6cb18_units4dnsss_DemoUnit) register(cr application.ComponentRegistry) error {
 	r := cr.NewRegistration()
-	r.ID = "com-d9888079a3ec2e2c-unit-DemoUnit"
+	r.ID = "com-3403d6cb189096c1-units4dnsss-DemoUnit"
 	r.Classes = "class-0dc072ed44b3563882bff4e657a52e62-Units"
 	r.Aliases = ""
 	r.Scope = "singleton"
@@ -25,13 +25,13 @@ func (inst* pd9888079a3_unit_DemoUnit) register(cr application.ComponentRegistry
 	return r.Commit()
 }
 
-func (inst* pd9888079a3_unit_DemoUnit) new() any {
-    return &pd9888079a.DemoUnit{}
+func (inst* p3403d6cb18_units4dnsss_DemoUnit) new() any {
+    return &p3403d6cb1.DemoUnit{}
 }
 
-func (inst* pd9888079a3_unit_DemoUnit) inject(injext application.InjectionExt, instance any) error {
+func (inst* p3403d6cb18_units4dnsss_DemoUnit) inject(injext application.InjectionExt, instance any) error {
 	ie := injext
-	com := instance.(*pd9888079a.DemoUnit)
+	com := instance.(*p3403d6cb1.DemoUnit)
 	nop(ie, com)
 
 	

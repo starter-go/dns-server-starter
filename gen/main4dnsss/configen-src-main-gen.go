@@ -5,14 +5,7 @@ import (
     p11d85ef56 "github.com/starter-go/dns-server-starter/app/classes/monitor"
     p2eec8228d "github.com/starter-go/dns-server-starter/app/classes/responder"
     peceb8058a "github.com/starter-go/dns-server-starter/app/classes/upstream"
-    pd70af8b23 "github.com/starter-go/dns-server-starter/app/data/dao"
-    p6365d7957 "github.com/starter-go/dns-server-starter/app/data/database"
-    pc9a3f7a59 "github.com/starter-go/dns-server-starter/app/data/dxo"
-    p7d9911eb4 "github.com/starter-go/dns-server-starter/app/implements/example"
-    p421feda54 "github.com/starter-go/dns-server-starter/app/web/controllers/apiv1"
     p9ee9f73b8 "github.com/starter-go/dns-server-starter/dnsss"
-    pd1a916a20 "github.com/starter-go/libgin"
-    p512a30914 "github.com/starter-go/libgorm"
      "github.com/starter-go/application"
 )
 
@@ -47,9 +40,27 @@ func (inst* p9fd301bff6_cache_Cache) inject(injext application.InjectionExt, ins
 	nop(ie, com)
 
 	
+    com.Enabled = inst.getEnabled(ie)
+    com.MaxTTL = inst.getMaxTTL(ie)
+    com.MinTTL = inst.getMinTTL(ie)
 
 
     return nil
+}
+
+
+func (inst*p9fd301bff6_cache_Cache) getEnabled(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss-resolver.cache.enabled}")
+}
+
+
+func (inst*p9fd301bff6_cache_Cache) getMaxTTL(ie application.InjectionExt)int{
+    return ie.GetInt("${dnsss-resolver.cache.max-ttl}")
+}
+
+
+func (inst*p9fd301bff6_cache_Cache) getMinTTL(ie application.InjectionExt)int{
+    return ie.GetInt("${dnsss-resolver.cache.min-ttl}")
 }
 
 
@@ -147,9 +158,21 @@ func (inst* p11d85ef560_monitor_ErrorFilter) inject(injext application.Injection
 	nop(ie, com)
 
 	
+    com.Enabled = inst.getEnabled(ie)
+    com.QuietMode = inst.getQuietMode(ie)
 
 
     return nil
+}
+
+
+func (inst*p11d85ef560_monitor_ErrorFilter) getEnabled(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss-resolver.error-filter.enabled}")
+}
+
+
+func (inst*p11d85ef560_monitor_ErrorFilter) getQuietMode(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss-resolver.error-filter.quiet-mode}")
 }
 
 
@@ -185,9 +208,21 @@ func (inst* p11d85ef560_monitor_Monitor) inject(injext application.InjectionExt,
 	nop(ie, com)
 
 	
+    com.Enabled = inst.getEnabled(ie)
+    com.EnableLogDetail = inst.getEnableLogDetail(ie)
 
 
     return nil
+}
+
+
+func (inst*p11d85ef560_monitor_Monitor) getEnabled(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss-resolver.monitor.enabled}")
+}
+
+
+func (inst*p11d85ef560_monitor_Monitor) getEnableLogDetail(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss-resolver.monitor.log-detail}")
 }
 
 
@@ -223,9 +258,15 @@ func (inst* p2eec8228d8_responder_DnsssResponder) inject(injext application.Inje
 	nop(ie, com)
 
 	
+    com.Enabled = inst.getEnabled(ie)
 
 
     return nil
+}
+
+
+func (inst*p2eec8228d8_responder_DnsssResponder) getEnabled(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss-resolver.responder.enabled}")
 }
 
 
@@ -262,6 +303,7 @@ func (inst* peceb8058ad_upstream_ForwardResolver) inject(injext application.Inje
 
 	
     com.DnsUpstreamServers = inst.getDnsUpstreamServers(ie)
+    com.Enabled = inst.getEnabled(ie)
 
 
     return nil
@@ -269,175 +311,12 @@ func (inst* peceb8058ad_upstream_ForwardResolver) inject(injext application.Inje
 
 
 func (inst*peceb8058ad_upstream_ForwardResolver) getDnsUpstreamServers(ie application.InjectionExt)string{
-    return ie.GetString("${dns.resolver.upstream.servers}")
+    return ie.GetString("${dnsss-resolver.upstream.servers}")
 }
 
 
-
-// type p6365d7957.ThisGroup in package:github.com/starter-go/dns-server-starter/app/data/database
-//
-// id:com-6365d79579708638-database-ThisGroup
-// class:class-512a309140d0ad99eb1c95c8dc0d02f9-GroupRegistry
-// alias:alias-c9a3f7a595874e44cb593cae1ec88572-DatabaseAgent
-// scope:singleton
-//
-type p6365d79579_database_ThisGroup struct {
-}
-
-func (inst* p6365d79579_database_ThisGroup) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-6365d79579708638-database-ThisGroup"
-	r.Classes = "class-512a309140d0ad99eb1c95c8dc0d02f9-GroupRegistry"
-	r.Aliases = "alias-c9a3f7a595874e44cb593cae1ec88572-DatabaseAgent"
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p6365d79579_database_ThisGroup) new() any {
-    return &p6365d7957.ThisGroup{}
-}
-
-func (inst* p6365d79579_database_ThisGroup) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p6365d7957.ThisGroup)
-	nop(ie, com)
-
-	
-    com.Enabled = inst.getEnabled(ie)
-    com.Alias = inst.getAlias(ie)
-    com.URI = inst.getURI(ie)
-    com.Prefix = inst.getPrefix(ie)
-    com.Source = inst.getSource(ie)
-    com.SourceManager = inst.getSourceManager(ie)
-
-
-    return nil
-}
-
-
-func (inst*p6365d79579_database_ThisGroup) getEnabled(ie application.InjectionExt)bool{
-    return ie.GetBool("${datagroup.default.enabled}")
-}
-
-
-func (inst*p6365d79579_database_ThisGroup) getAlias(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.default.alias}")
-}
-
-
-func (inst*p6365d79579_database_ThisGroup) getURI(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.default.uri}")
-}
-
-
-func (inst*p6365d79579_database_ThisGroup) getPrefix(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.default.table-name-prefix}")
-}
-
-
-func (inst*p6365d79579_database_ThisGroup) getSource(ie application.InjectionExt)string{
-    return ie.GetString("${datagroup.default.datasource}")
-}
-
-
-func (inst*p6365d79579_database_ThisGroup) getSourceManager(ie application.InjectionExt)p512a30914.DataSourceManager{
-    return ie.GetComponent("#alias-512a309140d0ad99eb1c95c8dc0d02f9-DataSourceManager").(p512a30914.DataSourceManager)
-}
-
-
-
-// type p7d9911eb4.DaoImpl in package:github.com/starter-go/dns-server-starter/app/implements/example
-//
-// id:com-7d9911eb42a2a4c3-example-DaoImpl
-// class:
-// alias:alias-d70af8b23bc2aef64c08d4b7680ff384-ExampleDAO
-// scope:singleton
-//
-type p7d9911eb42_example_DaoImpl struct {
-}
-
-func (inst* p7d9911eb42_example_DaoImpl) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-7d9911eb42a2a4c3-example-DaoImpl"
-	r.Classes = ""
-	r.Aliases = "alias-d70af8b23bc2aef64c08d4b7680ff384-ExampleDAO"
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p7d9911eb42_example_DaoImpl) new() any {
-    return &p7d9911eb4.DaoImpl{}
-}
-
-func (inst* p7d9911eb42_example_DaoImpl) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p7d9911eb4.DaoImpl)
-	nop(ie, com)
-
-	
-    com.Agent = inst.getAgent(ie)
-
-
-    return nil
-}
-
-
-func (inst*p7d9911eb42_example_DaoImpl) getAgent(ie application.InjectionExt)pc9a3f7a59.DatabaseAgent{
-    return ie.GetComponent("#alias-c9a3f7a595874e44cb593cae1ec88572-DatabaseAgent").(pc9a3f7a59.DatabaseAgent)
-}
-
-
-
-// type p421feda54.ExampleController in package:github.com/starter-go/dns-server-starter/app/web/controllers/apiv1
-//
-// id:com-421feda5413d45b5-apiv1-ExampleController
-// class:class-d1a916a203352fd5d33eabc36896b42e-Controller
-// alias:
-// scope:singleton
-//
-type p421feda541_apiv1_ExampleController struct {
-}
-
-func (inst* p421feda541_apiv1_ExampleController) register(cr application.ComponentRegistry) error {
-	r := cr.NewRegistration()
-	r.ID = "com-421feda5413d45b5-apiv1-ExampleController"
-	r.Classes = "class-d1a916a203352fd5d33eabc36896b42e-Controller"
-	r.Aliases = ""
-	r.Scope = "singleton"
-	r.NewFunc = inst.new
-	r.InjectFunc = inst.inject
-	return r.Commit()
-}
-
-func (inst* p421feda541_apiv1_ExampleController) new() any {
-    return &p421feda54.ExampleController{}
-}
-
-func (inst* p421feda541_apiv1_ExampleController) inject(injext application.InjectionExt, instance any) error {
-	ie := injext
-	com := instance.(*p421feda54.ExampleController)
-	nop(ie, com)
-
-	
-    com.Sender = inst.getSender(ie)
-    com.Dao = inst.getDao(ie)
-
-
-    return nil
-}
-
-
-func (inst*p421feda541_apiv1_ExampleController) getSender(ie application.InjectionExt)pd1a916a20.Responder{
-    return ie.GetComponent("#alias-d1a916a203352fd5d33eabc36896b42e-Responder").(pd1a916a20.Responder)
-}
-
-
-func (inst*p421feda541_apiv1_ExampleController) getDao(ie application.InjectionExt)pd70af8b23.ExampleDAO{
-    return ie.GetComponent("#alias-d70af8b23bc2aef64c08d4b7680ff384-ExampleDAO").(pd70af8b23.ExampleDAO)
+func (inst*peceb8058ad_upstream_ForwardResolver) getEnabled(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss-resolver.upstream.enabled}")
 }
 
 

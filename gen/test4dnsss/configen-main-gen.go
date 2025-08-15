@@ -30,7 +30,7 @@ func (inst *autoRegistrar) register(factory comFactory) error {
 func (inst*autoRegistrar) addAll() error {
 
     
-    inst.register(&pd9888079a3_unit_DemoUnit{})
+    inst.register(&p3403d6cb18_units4dnsss_DemoUnit{})
 
 
     return nil

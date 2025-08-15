@@ -17,14 +17,15 @@ type Monitor struct {
 
 	_as func(dnsss.ResolverRegistry) //starter:as(".")
 
+	Enabled         bool //starter:inject("${dnsss-resolver.monitor.enabled}")
+	EnableLogDetail bool //starter:inject("${dnsss-resolver.monitor.log-detail}")
+
 	countRequest       int
 	countResponse      int
 	countAnswer        int
 	countQuestion      int
 	countResolving     int
 	countResolvingSync int
-
-	enableLogDetail bool
 }
 
 func (inst *Monitor) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
@@ -33,10 +34,10 @@ func (inst *Monitor) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
 
 func (inst *Monitor) ListResolverRegistrations() []*dnsss.ResolverRegistration {
 	r1 := &dnsss.ResolverRegistration{
-		Name:     "Monitor",
+		Name:     "dnsss.monitor",
 		Resolver: inst,
 		Order:    orders.Monitor,
-		Enabled:  true,
+		Enabled:  inst.Enabled,
 	}
 	return []*dnsss.ResolverRegistration{r1}
 }
@@ -55,7 +56,7 @@ func (inst *Monitor) Resolve(ctx *dnsss.Context, next dnsss.ResolverChain) error
 func (inst *Monitor) logRequest(ctx *dnsss.Context) {
 	req := ctx.Request
 	list := req.Question
-	if inst.enableLogDetail {
+	if inst.EnableLogDetail {
 		for _, q := range list {
 			str := inst.stringifyQuestion(&q)
 			vlog.Info("question: %v", str)
@@ -68,7 +69,7 @@ func (inst *Monitor) logRequest(ctx *dnsss.Context) {
 func (inst *Monitor) logResponse(ctx *dnsss.Context) {
 	resp := ctx.Response
 	list := resp.Answer
-	if inst.enableLogDetail {
+	if inst.EnableLogDetail {
 		for _, rr := range list {
 			str := inst.stringifyRR(rr)
 			vlog.Info("answer: %v", str)
