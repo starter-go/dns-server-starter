@@ -5,6 +5,7 @@ import (
     p11d85ef56 "github.com/starter-go/dns-server-starter/app/classes/monitor"
     p2eec8228d "github.com/starter-go/dns-server-starter/app/classes/responder"
     peceb8058a "github.com/starter-go/dns-server-starter/app/classes/upstream"
+    peae5223f3 "github.com/starter-go/dns-server-starter/app/implements/iloggers"
     p9ee9f73b8 "github.com/starter-go/dns-server-starter/dnsss"
      "github.com/starter-go/application"
 )
@@ -209,7 +210,8 @@ func (inst* p11d85ef560_monitor_Monitor) inject(injext application.InjectionExt,
 
 	
     com.Enabled = inst.getEnabled(ie)
-    com.EnableLogDetail = inst.getEnableLogDetail(ie)
+    com.LogDetails = inst.getLogDetails(ie)
+    com.LoggerAgent = inst.getLoggerAgent(ie)
 
 
     return nil
@@ -221,8 +223,13 @@ func (inst*p11d85ef560_monitor_Monitor) getEnabled(ie application.InjectionExt)b
 }
 
 
-func (inst*p11d85ef560_monitor_Monitor) getEnableLogDetail(ie application.InjectionExt)bool{
-    return ie.GetBool("${dnsss-resolver.monitor.log-detail}")
+func (inst*p11d85ef560_monitor_Monitor) getLogDetails(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss.logger.log-details}")
+}
+
+
+func (inst*p11d85ef560_monitor_Monitor) getLoggerAgent(ie application.InjectionExt)p9ee9f73b8.LoggerAgent{
+    return ie.GetComponent("#alias-9ee9f73b8d049a5dcf2cc5fdc03de167-LoggerAgent").(p9ee9f73b8.LoggerAgent)
 }
 
 
@@ -317,6 +324,50 @@ func (inst*peceb8058ad_upstream_ForwardResolver) getDnsUpstreamServers(ie applic
 
 func (inst*peceb8058ad_upstream_ForwardResolver) getEnabled(ie application.InjectionExt)bool{
     return ie.GetBool("${dnsss-resolver.upstream.enabled}")
+}
+
+
+
+// type peae5223f3.DnsssLoggerImpl in package:github.com/starter-go/dns-server-starter/app/implements/iloggers
+//
+// id:com-eae5223f3fbdf618-iloggers-DnsssLoggerImpl
+// class:
+// alias:alias-9ee9f73b8d049a5dcf2cc5fdc03de167-LoggerAgent
+// scope:singleton
+//
+type peae5223f3f_iloggers_DnsssLoggerImpl struct {
+}
+
+func (inst* peae5223f3f_iloggers_DnsssLoggerImpl) register(cr application.ComponentRegistry) error {
+	r := cr.NewRegistration()
+	r.ID = "com-eae5223f3fbdf618-iloggers-DnsssLoggerImpl"
+	r.Classes = ""
+	r.Aliases = "alias-9ee9f73b8d049a5dcf2cc5fdc03de167-LoggerAgent"
+	r.Scope = "singleton"
+	r.NewFunc = inst.new
+	r.InjectFunc = inst.inject
+	return r.Commit()
+}
+
+func (inst* peae5223f3f_iloggers_DnsssLoggerImpl) new() any {
+    return &peae5223f3.DnsssLoggerImpl{}
+}
+
+func (inst* peae5223f3f_iloggers_DnsssLoggerImpl) inject(injext application.InjectionExt, instance any) error {
+	ie := injext
+	com := instance.(*peae5223f3.DnsssLoggerImpl)
+	nop(ie, com)
+
+	
+    com.LogDetails = inst.getLogDetails(ie)
+
+
+    return nil
+}
+
+
+func (inst*peae5223f3f_iloggers_DnsssLoggerImpl) getLogDetails(ie application.InjectionExt)bool{
+    return ie.GetBool("${dnsss.logger.log-details}")
 }
 
 

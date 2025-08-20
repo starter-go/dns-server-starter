@@ -35,6 +35,7 @@ func (inst*autoRegistrar) addAll() error {
     inst.register(&p2eec8228d8_responder_DnsssResponder{})
     inst.register(&p9fd301bff6_cache_Cache{})
     inst.register(&pc47b01c433_dnsss_ServerStarter{})
+    inst.register(&peae5223f3f_iloggers_DnsssLoggerImpl{})
     inst.register(&peceb8058ad_upstream_ForwardResolver{})
 
 

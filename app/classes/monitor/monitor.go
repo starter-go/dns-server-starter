@@ -17,8 +17,10 @@ type Monitor struct {
 
 	_as func(dnsss.ResolverRegistry) //starter:as(".")
 
-	Enabled         bool //starter:inject("${dnsss-resolver.monitor.enabled}")
-	EnableLogDetail bool //starter:inject("${dnsss-resolver.monitor.log-detail}")
+	Enabled    bool //starter:inject("${dnsss-resolver.monitor.enabled}")
+	LogDetails bool //starter:inject("${dnsss.logger.log-details}")
+
+	LoggerAgent dnsss.LoggerAgent //starter:inject("#")
 
 	countRequest       int
 	countResponse      int
@@ -30,6 +32,10 @@ type Monitor struct {
 
 func (inst *Monitor) _impl() (dnsss.ResolverRegistry, dnsss.Resolver) {
 	return inst, inst
+}
+
+func (inst *Monitor) innerGetLogger() vlog.Logger {
+	return inst.LoggerAgent.GetLogger()
 }
 
 func (inst *Monitor) ListResolverRegistrations() []*dnsss.ResolverRegistration {
@@ -54,12 +60,16 @@ func (inst *Monitor) Resolve(ctx *dnsss.Context, next dnsss.ResolverChain) error
 }
 
 func (inst *Monitor) logRequest(ctx *dnsss.Context) {
+	const lv = vlog.DEBUG
+	logger1 := inst.innerGetLogger()
 	req := ctx.Request
 	list := req.Question
-	if inst.EnableLogDetail {
+	if inst.LogDetails {
 		for _, q := range list {
 			str := inst.stringifyQuestion(&q)
-			vlog.Info("question: %v", str)
+			logger1.ForLog(lv, func(logger2 vlog.Logger) {
+				logger2.Log(lv, "question: %v", str)
+			})
 		}
 	}
 	inst.countQuestion += len(list)
@@ -67,12 +77,16 @@ func (inst *Monitor) logRequest(ctx *dnsss.Context) {
 }
 
 func (inst *Monitor) logResponse(ctx *dnsss.Context) {
+	const lv = vlog.DEBUG
+	logger1 := inst.innerGetLogger()
 	resp := ctx.Response
 	list := resp.Answer
-	if inst.EnableLogDetail {
+	if inst.LogDetails {
 		for _, rr := range list {
 			str := inst.stringifyRR(rr)
-			vlog.Info("answer: %v", str)
+			logger1.ForLog(lv, func(logger2 vlog.Logger) {
+				logger2.Log(lv, "answer: %v", str)
+			})
 		}
 	}
 	inst.countAnswer += len(list)
@@ -107,7 +121,12 @@ func (inst *Monitor) updateCountResolvingSync() {
 	b.WriteString(strconv.Itoa(inst.countAnswer))
 
 	b.WriteString("]")
-	vlog.Info(b.String())
+
+	const lv = vlog.DEBUG
+	logger1 := inst.innerGetLogger()
+	logger1.ForLog(lv, func(logger2 vlog.Logger) {
+		logger2.Log(lv, "%v", b.String())
+	})
 }
 
 func (inst *Monitor) stringifyRR(rr dns.RR) string {

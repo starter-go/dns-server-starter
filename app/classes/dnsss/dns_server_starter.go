@@ -42,7 +42,7 @@ func (inst *ServerStarter) Life() *application.Life {
 		OnCreate: inst.create,
 		OnStart:  inst.start,
 		OnStop:   inst.stop,
-		OnLoop:   inst.loop,
+		// OnLoop:   inst.loop,
 	}
 	return l
 }
@@ -126,14 +126,15 @@ func (inst *ServerStarter) stop() error {
 	return inst.closeOlder(older)
 }
 
-func (inst *ServerStarter) loop() error {
-	return nil
-}
+// func (inst *ServerStarter) loop() error {
+// 	return nil
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 type innerDNSServerRuntime struct {
 	starter *ServerStarter
+	server  *dns.Server
 
 	chain dnsss.ResolverChain
 
@@ -150,6 +151,18 @@ func (inst *innerDNSServerRuntime) start() {
 
 func (inst *innerDNSServerRuntime) stop() {
 	inst.stopping = true
+	go inst.Close()
+
+	const timeout = time.Second * 15
+	inst.starter.waitForRuntimeStopped(inst, timeout)
+}
+
+func (inst *innerDNSServerRuntime) Close() error {
+	ser := inst.server
+	if ser == nil {
+		return nil
+	}
+	return ser.Shutdown()
 }
 
 func (inst *innerDNSServerRuntime) run1() {
@@ -161,6 +174,7 @@ func (inst *innerDNSServerRuntime) run1() {
 		utils.HandleErrorX(x)
 	}()
 	defer func() {
+		inst.stopping = true
 		inst.stopped = true
 	}()
 
@@ -178,11 +192,12 @@ func (inst *innerDNSServerRuntime) run2() error {
 	server.TsigSecret = map[string]string{
 		"axfr.": "so6ZGir4GPAqINNh9U5c3A==",
 	}
+	inst.server = server
 
 	go func() {
 		err := server.ListenAndServe()
 		utils.HandleError(err)
-		inst.stop()
+		inst.stopping = true
 	}()
 
 	dns.HandleFunc(".", inst.handleDNSRequest)
@@ -197,6 +212,9 @@ func (inst *innerDNSServerRuntime) run3() error {
 	const step = time.Second
 	for {
 		if inst.stopping {
+			break
+		}
+		if inst.stopped {
 			break
 		}
 		time.Sleep(step)
